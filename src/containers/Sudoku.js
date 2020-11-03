@@ -26,8 +26,13 @@ class Sudoku extends Component {
         // TODO
 
         // Useful hints:
+        if (this.state.problem.content[row_index][col_index] === "0"){
+            this.setState({selectedGrid: {row_index: row_index, col_index: col_index}})
+        }
+
         // console.log(row_index, col_index)
-        // console.log(this.state.selectedGrid)
+        // console.log(this.state.problem.content[row_index][col_index])
+        // console.log(this.state.selectedGrid)     
     }
 
     handleKeyDownEvent = (event) => {
@@ -35,12 +40,110 @@ class Sudoku extends Component {
 
         // Useful hints:
         // console.log(event)
-        // if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {}
-        // if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] === "0") {}
+        // console.log(typeof(this.state.gridValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index]))
+        // console.log(typeof(event.key))
+
+        let conflict_flag = false
+        this.setState({conflicts: [{ row_index: -1, col_index: -1 }]})
+
+        if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {
+            if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] === "0") {
+                
+                for (let i = 0; i < 9; i++) {
+                    if (this.state.gridValues[i][this.state.selectedGrid.col_index] === event.key && event.key !== "0"){
+                        this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: this.state.selectedGrid.col_index})})
+                        //console.log(this.state.conflicts)
+                        conflict_flag = true
+                    }
+                }
+
+                for (let j = 0; j < 9; j++) {
+                    if (this.state.gridValues[this.state.selectedGrid.row_index][j] === event.key && event.key !== "0"){
+                        this.setState({conflicts: this.state.conflicts.concat({row_index: this.state.selectedGrid.row_index, col_index: j})})
+                        //console.log(this.state.conflicts)
+                        conflict_flag = true
+                    }
+                }
+
+                //console.log(Math.floor(this.state.selectedGrid.row_index/3))
+                let startY = Math.floor(this.state.selectedGrid.row_index/3)*3
+                for (let i = startY; i < startY + 3; i++){
+                    let startX = Math.floor(this.state.selectedGrid.col_index/3)*3
+                    for (let j = startX; j < startX + 3; j++){
+                        if (this.state.gridValues[i][j] === event.key && event.key !== "0"){
+                            this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: j})})
+                            //console.log(i, j)
+                            conflict_flag = true
+                        }
+                    }
+                }
+
+                if (!conflict_flag){
+                    let newGrid = this.state.gridValues
+                    newGrid[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = event.key
+                    // console.log(newGrid[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index])
+                    this.setState({gridValues: newGrid});                    
+                }
+                else{
+                    this.setState({ gameBoardBorderStyle: "8px solid #E77" });
+                    setTimeout(() => { this.setState({ gameBoardBoarderStyle: "8px solid #000" }); }, 1000);
+                }
+            }  
+        }
     }
 
     handleScreenKeyboardInput = (num) => {
         // TODO
+
+        console.log(typeof(num))
+
+        let conflict_flag = false
+        this.setState({conflicts: [{ row_index: -1, col_index: -1 }]})
+
+        if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1) {
+            if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] === "0") {
+                
+                for (let i = 0; i < 9; i++) {
+                    if (this.state.gridValues[i][this.state.selectedGrid.col_index] === num.toString() && num !== 0){
+                        this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: this.state.selectedGrid.col_index})})
+                        //console.log(this.state.conflicts)
+                        conflict_flag = true
+                    }
+                }
+
+                for (let j = 0; j < 9; j++) {
+                    if (this.state.gridValues[this.state.selectedGrid.row_index][j] === num.toString() && num !== "0"){
+                        this.setState({conflicts: this.state.conflicts.concat({row_index: this.state.selectedGrid.row_index, col_index: j})})
+                        //console.log(this.state.conflicts)
+                        conflict_flag = true
+                    }
+                }
+
+                //console.log(Math.floor(this.state.selectedGrid.row_index/3))
+                let startY = Math.floor(this.state.selectedGrid.row_index/3)*3
+                for (let i = startY; i < startY + 3; i++){
+                    let startX = Math.floor(this.state.selectedGrid.col_index/3)*3
+                    for (let j = startX; j < startX + 3; j++){
+                        if (this.state.gridValues[i][j] === num.toString() && num !== "0"){
+                            this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: j})})
+                            //console.log(i, j)
+                            conflict_flag = true
+                        }
+                    }
+                }
+
+                if (!conflict_flag){
+                    let newGrid = this.state.gridValues
+                    newGrid[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = (num === 0) ? "" : num
+                    // console.log(newGrid[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index])
+                    this.setState({gridValues: newGrid});                    
+                }
+                else{
+                    this.setState({ gameBoardBorderStyle: "8px solid #E77" });
+                    setTimeout(() => { this.setState({ gameBoardBoarderStyle: "8px solid #000" }); }, 1000);
+                }
+            }  
+        }      
     }
 
     componentDidMount = () => {
