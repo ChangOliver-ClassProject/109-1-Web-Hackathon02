@@ -84,21 +84,35 @@ class Sudoku extends Component {
                     // console.log(newGrid[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index])
                     this.setState({gridValues: newGrid});                    
                 }
-                else{
-                    this.setState({ gameBoardBorderStyle: "8px solid #E77" });
-                    setTimeout(() => { this.setState({ gameBoardBoarderStyle: "8px solid #000" }); }, 1000);
-                }
+                // else{
+                //     this.setState({ gameBoardBorderStyle: "8px solid #E77" });
+                //     setTimeout(() => { this.setState({ gameBoardBoarderStyle: "8px solid #000" }); }, 1000);
+                // }
             }  
         }
+
+        let complete = true
+        for (let i = 0; i < 9; i++){
+            for (let j = 0; j < 9; j++){
+                if (this.state.gridValues[i][j] === "0"){
+                    complete = false
+                }
+            }
+        }
+
+        if (complete){
+            this.setState({completeFlag: true})
+            setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
+        }
+
     }
 
     handleScreenKeyboardInput = (num) => {
         // TODO
 
-        console.log(typeof(num))
-
         let conflict_flag = false
         this.setState({conflicts: [{ row_index: -1, col_index: -1 }]})
+        console.log(this.state.conflicts)
 
         if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1) {
             if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] === "0") {
@@ -106,15 +120,15 @@ class Sudoku extends Component {
                 for (let i = 0; i < 9; i++) {
                     if (this.state.gridValues[i][this.state.selectedGrid.col_index] === num.toString() && num !== 0){
                         this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: this.state.selectedGrid.col_index})})
-                        //console.log(this.state.conflicts)
+                        console.log(this.state.conflicts)
                         conflict_flag = true
                     }
                 }
 
                 for (let j = 0; j < 9; j++) {
-                    if (this.state.gridValues[this.state.selectedGrid.row_index][j] === num.toString() && num !== "0"){
+                    if (this.state.gridValues[this.state.selectedGrid.row_index][j] === num.toString() && num !== 0){
                         this.setState({conflicts: this.state.conflicts.concat({row_index: this.state.selectedGrid.row_index, col_index: j})})
-                        //console.log(this.state.conflicts)
+                        console.log(this.state.conflicts)
                         conflict_flag = true
                     }
                 }
@@ -124,9 +138,9 @@ class Sudoku extends Component {
                 for (let i = startY; i < startY + 3; i++){
                     let startX = Math.floor(this.state.selectedGrid.col_index/3)*3
                     for (let j = startX; j < startX + 3; j++){
-                        if (this.state.gridValues[i][j] === num.toString() && num !== "0"){
+                        if (this.state.gridValues[i][j] === num.toString() && num !== 0){
                             this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: j})})
-                            //console.log(i, j)
+                            console.log(this.state.conflicts)
                             conflict_flag = true
                         }
                     }
