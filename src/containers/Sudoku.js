@@ -100,7 +100,7 @@ class Sudoku extends Component {
                 for (let i = 0; i < 9; i++) {
                     if (this.state.gridValues[i][this.state.selectedGrid.col_index] === num.toString() && num !== 0){
                         this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: this.state.selectedGrid.col_index})})
-                        console.log(this.state.conflicts)
+                        //console.log("check col", this.state.conflicts)
                         conflict_flag = true
                     }
                 }
@@ -108,7 +108,7 @@ class Sudoku extends Component {
                 for (let j = 0; j < 9; j++) {
                     if (this.state.gridValues[this.state.selectedGrid.row_index][j] === num.toString() && num !== 0){
                         this.setState({conflicts: this.state.conflicts.concat({row_index: this.state.selectedGrid.row_index, col_index: j})})
-                        console.log(this.state.conflicts)
+                        //console.log("check row", this.state.conflicts)
                         conflict_flag = true
                     }
                 }
@@ -119,7 +119,7 @@ class Sudoku extends Component {
                     for (let j = startX; j < startX + 3; j++){
                         if (this.state.gridValues[i][j] === num.toString() && num !== 0){
                             this.setState({conflicts: this.state.conflicts.concat({row_index: i, col_index: j})})
-                            console.log(this.state.conflicts)
+                            //console.log("cehck block ", this.state.conflicts)
                             conflict_flag = true
                         }
                     }
