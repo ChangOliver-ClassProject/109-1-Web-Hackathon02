@@ -50,7 +50,6 @@ class Sudoku extends Component {
                     }
                 }
 
-                //console.log(Math.floor(this.state.selectedGrid.row_index/3))
                 let startY = Math.floor(this.state.selectedGrid.row_index/3)*3
                 for (let i = startY; i < startY + 3; i++){
                     let startX = Math.floor(this.state.selectedGrid.col_index/3)*3
@@ -137,7 +136,21 @@ class Sudoku extends Component {
                                                         conflicts: [{ row_index: -1, col_index: -1 }]}); }, 1000);
                 }
             }  
-        }      
+        }
+
+        let complete = true
+        for (let i = 0; i < 9; i++){
+            for (let j = 0; j < 9; j++){
+                if (this.state.gridValues[i][j] === "0"){
+                    complete = false
+                }
+            }
+        }
+
+        if (complete){
+            this.setState({completeFlag: true})
+            setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
+        }     
     }
 
     componentDidMount = () => {
